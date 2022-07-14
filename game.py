@@ -76,54 +76,65 @@ class Game:
     def check_object_collision(self):
         player_bullets = self._player.get_bullet()
         
+        # for loop checks collision between the players bullet and enemy.
         for bullet in player_bullets:
             for enemy in self._enemies:
                 if bullet.get_position().get_x() in range(enemy.get_position().get_x(), enemy.get_position().get_x() + 16):
                     if bullet.get_position().get_y() in range(enemy.get_position().get_y(), enemy.get_position().get_y() + 16):
                         bullet.subtract_hit_points()
                         enemy.subtract_hit_points()
-                    
+                        
+                        # removes the bullet when enemy runs out of hit point.
                         if bullet.get_hit_points() == 0:
                             self._player.remove_bullet(bullet)
-                                
+                         
+                        # removes the enemy when the enemy runs out of hit points or dies and update score.
                         if enemy.get_hit_points() == 0:
                             self._enemies.remove(enemy)
                             self._score.set_score(enemy.get_score())
         
+        # this for loop is checking collision between the enemy and the player.
         for enemy in self._enemies:
             if enemy.get_position().get_x() in range(self._player.get_position().get_x(), self._player.get_position().get_x() + 20):
                     if enemy.get_position().get_y() in range(self._player.get_position().get_y(), self._player.get_position().get_y() + 20):
                         enemy.subtract_hit_points()
                         self._player.subtract_hit_points()
-
+                        
+                        # removes the enemy when enemy runs out of hit point.
                         if enemy.get_hit_points() == 0:
                             self._enemies.remove(enemy)
-                        
+                            
+                        # reset player position when player runs out of hit points.
                         if self._player.get_hit_points() == 0:
                             self._player.reset_position()
                             self._player.reset_hit_points()
-                        
+                            
+                        # updates player's life.
                         if self._life_counter.get_life_counter() > 0:
                             self._life_counter.subtract_life()
             
             enemy_bullets = enemy.get_bullets()
             
+            # this for loop is checking the enemy's bullet and player.
             for bullet in enemy_bullets:
                 if bullet.get_position().get_x() in range(self._player.get_position().get_x(), self._player.get_position().get_x() + 16):
                     if bullet.get_position().get_y() in range(self._player.get_position().get_y(), self._player.get_position().get_y() + 16):
                         bullet.subtract_hit_points()
                         self._player.subtract_hit_points()
-
+                        
+                        # removes the enemy's bullet when bullet runs out of hit points.
                         if bullet.get_hit_points() == 0:
                             enemy.remove_bullet(bullet)
-
+                        
+                        # reset player position when player runs out of hit points.
                         if self._player.get_hit_points() == 0:
                             self._player.reset_position()
                             self._player.reset_hit_points()
-                        
+                        # updates player's life.
                         if self._life_counter.get_life_counter() > 0:
                             self._life_counter.subtract_life()
-
+        
+        # display game over message when the player runs out of lifes.
         if self._life_counter.get_life_counter() == 0:
             self._player.game_over()
 
